@@ -1,1 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DriveTest Guru — Mock Test (Single File)</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#0f1720; --soft:#151e28; --text:#e6edf3; --muted:#9fb0c0; --brand:#58a6ff; --accent:#22c55e; --warn:#f59e0b; --danger:#ef4444; --ring:#1f6feb;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif;background:linear-gradient(120deg,#0a0e13,#0c1219 60%,#0a0e13);color:var(--text);}
+    .container{max-width:1100px;margin:0 auto;padding:24px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .title{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.2px}
+    .badge{font-size:12px;padding:3px 8px;border-radius:999px;background:linear-gradient(90deg,#19324a,#0f2538);color:#b7d4f7;border:1px solid #244160}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{border:1px solid #1b2a3a;background:#0d141d;color:#b7c7d9;padding:10px 14px;border-radius:999px;cursor:pointer}
+    .tab.active{background:linear-gradient(180deg,#102034,#0d1726);color:#e6edf3;border-color:#284968;box-shadow:0 0 0 2px #0b121b,0 0 0 4px #17324d}
+    .panel{background:radial-gradient(1200px 500px at 10% -10%,rgba(35,66,102,.14),transparent 40%),linear-gradient(180deg,#0c141e,#0b1119);border:1px solid #1b2a3a;border-radius:16px;padding:18px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,#0e1621,#0b121a);border:1px solid #182636;border-radius:16px;padding:16px}
+    .card h3{margin:.2rem 0 0.75rem 0}
+    .muted{color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid #1b2a3a;background:#0d141d;color:#eaf2fb;cursor:pointer}
+    .btn:hover{border-color:#2a4563;box-shadow:0 0 0 3px rgba(33,87,146,.25)}
+    .btn.brand{background:linear-gradient(180deg,#0f2740,#0d1f34);border-color:#1f3c5b}
+    .btn.good{background:linear-gradient(180deg,#10331f,#0c2216);border-color:#1e3f2b}
+    .btn.warn{background:linear-gradient(180deg,#33260f,#221a0c);border-color:#4b3a18}
+    .btn.danger{background:linear-gradient(180deg,#3a1111,#2a0c0c);border-color:#451b1b}
+    .btn.small{padding:8px 10px;font-size:13px;border-radius:10px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{border:1px dashed #2a4563;background:#0d141d;color:#b7c7d9;padding:6px 10px;border-radius:999px;font-size:13px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .row.stretch>*{flex:1}
+    input[type="text"], input[type="number"], textarea, select{width:100%;background:#0c131b;color:#e6edf3;border:1px solid #1b2a3a;border-radius:12px;padding:10px}
+    textarea{min-height:90px;resize:vertical}
+    .qopt{display:flex;gap:10px;align-items:flex-start;border:1px solid #1a2a3b;background:#0c131b;border-radius:12px;padding:10px}
+    .qopt input[type="radio"]{transform:translateY(2px)}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid #23415e;background:#0e1a27;color:#b7d4f7;font-size:12px}
+    .progress{height:10px;background:#0c131b;border:1px solid #1b2a3a;border-radius:999px;overflow:hidden}
+    .bar{height:100%;width:0;background:linear-gradient(90deg,#58a6ff,#22c55e)}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;background:#0c1218;border:1px solid #1b2a3a;border-radius:6px;padding:2px 6px;color:#c8d7e8}
+    .toast{position:fixed;bottom:18px;right:18px;background:#0c131b;border:1px solid #1b2a3a;border-radius:12px;padding:12px 14px;display:none}
+    .hint{font-size:13px;color:#9fb0c0}
+    .tag{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid #213a55;background:#0e1824;color:#9fc3ec}
+    .score{font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.7" d="M3 12h18M6 12l2.5-6h7L18 12m-6 0v8"/></svg>
+        <div>
+          <div style="font-size:20px">DriveTest Guru</div>
+          <div class="hint">Learn • Practice • Mock Test — built for accuracy</div>
+        </div>
+      </div>
+      <div class="row">
+        <span class="badge">Single-file • Works offline</span>
+        <button class="btn small" id="exportBtn">Export Questions</button>
+        <button class="btn small brand" id="importBtn">Import</button>
+      </div>
+    </header>
 
+    <div class="tabs" id="tabs"></div>
+
+    <section class="panel" id="panel"></section>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+  /*************************
+   * Minimal state manager  *
+   *************************/
+  const $ = (sel, all=false, root=document)=> all? [...root.querySelectorAll(sel)] : root.querySelector(sel);
+  const state = {
+    view: 'Learn',
+    questions: [], // populated on first load; stored in localStorage
+    filtered: [],
+    current: 0,
+    answers: {}, // qid -> selected index
+    review: [], // array of qids answered wrong
+    timers: { start:null, elapsed:0 },
+    settings: { category:'All', shuffle:true, limit:25, negative:false, showExplanations:true }
+  };
+
+  const VIEWS = ['Learn','Practice','Mock Test','Review','Builder'];
+
+  function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 2100); }
+
+  function save(){ localStorage.setItem('driveTestGuruBank', JSON.stringify(state.questions)); }
+  function load(){ const raw=localStorage.getItem('driveTestGuruBank'); if(raw){ try{state.questions=JSON.parse(raw)}catch(e){console.warn(e)} } }
+
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+
+  /*********************
+   * Starter questions  *
+   * (Conservative, non-controversial, India-agnostic basics)
+   *********************/
+  const STARTER = [
+    {id:uid(), q:'What does the red octagonal sign with the word “STOP” mean?', opts:['Slow down','Stop and proceed if safe','Stop completely and proceed when safe','No entry'], ans:2, cat:'Signs', exp:'A STOP sign requires a complete halt before the stop line/zebra/edge, then proceed when safe.'},
+    {id:uid(), q:'A triangular sign with a red border and the words “GIVE WAY” indicates…', opts:['You have priority','You must stop','Give priority to traffic on the main road','No overtaking'], ans:2, cat:'Signs', exp:'Yield to traffic on the main road; stop if necessary.'},
+    {id:uid(), q:'A circular sign with a red border and “30” indicates…', opts:['Minimum speed 30 km/h','Speed limit 30 km/h','Advisory speed 30 km/h','End of speed restriction'], ans:1, cat:'Signs', exp:'Circular red-bordered numerals denote the maximum permitted speed.'},
+    {id:uid(), q:'What does a blue circular sign with a white arrow pointing straight mean?', opts:['No entry','One-way traffic (compulsory direction)','Give way','Warning of merge'], ans:1, cat:'Signs', exp:'Blue mandatory signs indicate compulsory direction/movement.'},
+    {id:uid(), q:'A circular sign with a red border and a trumpet crossed out means…', opts:['Horn compulsory','Horn permitted only at night','Horn prohibited','Hospital ahead'], ans:2, cat:'Signs', exp:'Horn Prohibited: avoid using the horn in this zone.'},
+    {id:uid(), q:'A sign with children silhouettes near a crosswalk indicates…', opts:['Pedestrians prohibited','School ahead / watch for children','Playground only','Zebra crossing ends'], ans:1, cat:'Signs', exp:'School zone: slow down and be prepared to stop for children.'},
+    {id:uid(), q:'What is the correct action at a steady red traffic signal?', opts:['Proceed with caution','Stop before the stop line','Go if the way is clear','Slow and turn right'], ans:1, cat:'Signals', exp:'Red means stop and wait behind the line until green/arrow appears.'},
+    {id:uid(), q:'A flashing amber (yellow) signal at an intersection means…', opts:['Stop and wait for green','Proceed with caution and give way if needed','Intersection closed','Pedestrians must not cross'], ans:1, cat:'Signals', exp:'Flashing amber warns to proceed carefully; yield where required.'},
+    {id:uid(), q:'On a two-lane road with a solid centre line on your side and a broken line on the other, you may…', opts:['Overtake if safe','Not overtake','Overtake motorcycles only','Overtake buses only'], ans:1, cat:'Markings', exp:'Solid line on your side = do not cross to overtake.'},
+    {id:uid(), q:'Before changing lanes you should…', opts:['Signal and move immediately','Check mirrors, signal, check blind spot, then move if clear','Rely on the horn to warn others','Speed up without signalling'], ans:1, cat:'Rules', exp:'Use mirrors, indicate intention, shoulder-check, and change only when safe.'},
+    {id:uid(), q:'The safe following distance in good conditions is the…', opts:['1‑second rule','2‑second rule','4‑second rule','Car length rule'], ans:1, cat:'Rules', exp:'Maintain at least a two‑second gap; increase in poor conditions.'},
+    {id:uid(), q:'Who has priority at an uncontrolled T‑junction?', opts:['Traffic turning right','Traffic on the terminating road','Traffic on the continuing/main road','Pedestrians never have priority'], ans:2, cat:'Rules', exp:'Vehicles on the main (continuing) road have priority.'},
+    {id:uid(), q:'When approaching a pedestrian (zebra) crossing without signals, you must…', opts:['Sound horn and pass','Increase speed to clear quickly','Stop if pedestrians are on or stepping onto the crossing','Stop only for groups'], ans:2, cat:'Rules', exp:'Give priority to pedestrians on or entering the crossing.'},
+    {id:uid(), q:'A circular sign with a red border and a motorcycle/car silhouette crossed means…', opts:['No motor vehicles','Motor vehicles only','Two‑wheelers only','Bicycles only'], ans:0, cat:'Signs', exp:'Prohibitory signs with vehicle symbols indicate restrictions (here: no motor vehicles).'},
+    {id:uid(), q:'What does a double solid centre line mean?', opts:['Overtaking allowed either side','Overtaking allowed from one side','No overtaking from either direction','Two‑way turns permitted'], ans:2, cat:'Markings', exp:'Crossing double solid lines is prohibited except when directed.'},
+    {id:uid(), q:'On seeing an emergency vehicle with siren/lights, you should…', opts:['Race ahead','Maintain speed','Yield and give way safely','Stop in the middle of the lane'], ans:2, cat:'Rules', exp:'Move aside and allow a clear path as soon as it’s safe.'},
+    {id:uid(), q:'Seat belts for front passengers are…', opts:['Optional in cities','Required by law','Only for highways','Only for new cars'], ans:1, cat:'Rules', exp:'Wearing seat belts greatly reduces injury risk and is required by law.'},
+    {id:uid(), q:'A U‑turn prohibited sign means…', opts:['No right turn','No left turn','No U‑turn','No overtaking'], ans:2, cat:'Signs', exp:'Do not make a U‑turn at this location.'},
+    {id:uid(), q:'Bus lane (marked/ signed) means…', opts:['All vehicles may use if free','Only buses/ permitted vehicles during operational hours','Motorcycles preferred','Lane closed'], ans:1, cat:'Rules', exp:'Observe lane control signs/ times; otherwise keep out.'},
+    {id:uid(), q:'Using a mobile phone while driving is…', opts:['Allowed if brief','Allowed at low speed','Not allowed unless hands‑free and still must not distract','Always allowed for navigation'], ans:2, cat:'Rules', exp:'Do not handle devices while driving; distraction is dangerous/illegal.'}
+  ];
+
+  /****************
+   * App boot     *
+   ****************/
+  load();
+  if(!state.questions || !state.questions.length){ state.questions = STARTER; save(); }
+  state.filtered = [...state.questions];
+
+  function setView(v){ state.view=v; render(); }
+
+  function filterByCategory(cat){
+    state.settings.category = cat;
+    state.filtered = cat==='All'? [...state.questions] : state.questions.filter(q=>q.cat===cat);
+    if(state.settings.shuffle) shuffle(state.filtered);
+    state.current = 0; state.answers={}; state.review=[]; state.timers={start:null, elapsed:0};
+    render();
+  }
+
+  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } }
+
+  function categories(){ const cats = Array.from(new Set(state.questions.map(q=>q.cat))).sort(); return ['All', ...cats]; }
+
+  // Tabs
+  function renderTabs(){
+    const tabs = VIEWS.map(v=>`<button class="tab ${state.view===v?'active':''}" onclick="setView('${v}')">${v}</button>`).join('');
+    $('#tabs').innerHTML = tabs;
+  }
+
+  function progressBar(done,total){ const p=Math.round((done/Math.max(total,1))*100); return `<div class="progress" aria-label="Progress"><div class="bar" style="width:${p}%"></div></div><div class="hint">${done}/${total} (${p}%)</div>` }
+
+  // Learn view
+  function Learn(){
+    const catChips = categories().map(c=>`<button class="chip" onclick="filterByCategory('${c}')">${c}</button>`).join('');
+    const items = state.filtered.slice(0, Math.min(20, state.filtered.length)).map(q=>`
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="pill">${q.cat}</div>
+            <h3>${q.q}</h3>
+          </div>
+          <button class="btn small" onclick="startPractice('${q.id}')">Practice</button>
+        </div>
+        <ol>
+          ${q.opts.map((o,i)=>`<li style="margin:.3rem 0">${String.fromCharCode(65+i)}. ${o}</li>`).join('')}
+        </ol>
+        <div class="hint">Answer: <span class="tag">${String.fromCharCode(65+q.ans)}</span> • <span>${q.exp||''}</span></div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="grid">
+        <div>
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <div class="row" style="gap:10px;align-items:center">
+              <span class="muted">Categories:</span>
+              <div class="chips">${catChips}</div>
+            </div>
+            <div class="row">
+              <label class="row" style="gap:6px" title="Shuffle questions">
+                <input type="checkbox" ${state.settings.shuffle?'checked':''} onchange="state.settings.shuffle=this.checked;filterByCategory(state.settings.category)"> Shuffle
+              </label>
+            </div>
+          </div>
+          <div style="height:12px"></div>
+          ${items || '<div class="card">No questions yet. Use the Builder to add your own.</div>'}
+        </div>
+        <aside>
+          <div class="card">
+            <h3>Study Tips</h3>
+            <ul>
+              <li>Focus on <b>sign meanings</b>, <b>right‑of‑way</b>, and <b>road markings</b>.</li>
+              <li>Use the <b>Builder</b> to copy exact Q&A from your book (add page refs in “Explanation”).</li>
+              <li>Switch to <b>Mock Test</b> for exam‑like timed practice.</li>
+            </ul>
+          </div>
+          <div style="height:12px"></div>
+          <div class="card">
+            <h3>Quick Settings</h3>
+            <div class="row stretch">
+              <label>Limit <input type="number" min="5" max="200" value="${state.settings.limit}" onchange="state.settings.limit=this.valueAsNumber"></label>
+              <label>Category
+                <select onchange="filterByCategory(this.value)">
+                  ${categories().map(c=>`<option ${state.settings.category===c?'selected':''}>${c}</option>`).join('')}
+                </select>
+              </label>
+            </div>
+            <div style="height:8px"></div>
+            <label class="row" style="gap:8px">
+              <input type="checkbox" ${state.settings.negative?'checked':''} onchange="state.settings.negative=this.checked"> Negative marking (‑0.25)
+            </label>
+            <label class="row" style="gap:8px">
+              <input type="checkbox" ${state.settings.showExplanations?'checked':''} onchange="state.settings.showExplanations=this.checked"> Show explanations
+            </label>
+          </div>
+        </aside>
+      </div>`
+  }
+
+  function startPractice(id){ const idx = state.filtered.findIndex(q=>q.id===id); state.current = Math.max(0, idx); setView('Practice'); }
+
+  // Practice view
+  function Practice(){
+    const q = state.filtered[state.current];
+    if(!q) return '<div class="card">No question. Try changing filters.</div>';
+    const opts = q.opts.map((o,i)=>{
+      const picked = state.answers[q.id]===i;
+      const correct = i===q.ans;
+      const reveal = state.answers[q.id]!==undefined;
+      return `<label class="qopt ${picked? 'picked': ''} ${reveal && correct? 'good':''} ${reveal && picked && !correct? 'danger':''}">
+        <input type="radio" name="opt" ${picked?'checked':''} onclick="pick('${q.id}',${i})">
+        <div>${String.fromCharCode(65+i)}. ${o}</div>
+      </label>`
+    }).join('');
+
+    return `
+    <div class="grid">
+      <div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <div class="row" style="gap:8px;align-items:center">
+              <span class="pill">${q.cat}</span>
+              <span class="hint">Question ${state.current+1} / ${state.filtered.length}</span>
+            </div>
+            <div class="row">
+              <button class="btn small" onclick="prev()">◀ Prev</button>
+              <button class="btn small" onclick="next()">Next ▶</button>
+            </div>
+          </div>
+          <h3>${q.q}</h3>
+          <div role="radiogroup" aria-label="Options">${opts}</div>
+          ${ state.settings.showExplanations && state.answers[q.id]!==undefined ? `<div class="hint" style="margin-top:8px">Explanation: ${q.exp||''}</div>`: ''}
+        </div>
+      </div>
+      <aside>
+        <div class="card">
+          <h3>Quick Nav</h3>
+          <div class="row" style="flex-wrap:wrap;gap:6px">
+            ${state.filtered.map((qq,i)=>{
+              const answered = state.answers[qq.id]!==undefined;
+              const ok = answered && state.answers[qq.id]===qq.ans;
+              return `<button class="btn small ${ok?'good': answered?'warn':''}" onclick="goto(${i})">${i+1}</button>`
+            }).join('')}
+          </div>
+          <div style="height:10px"></div>
+          ${progressBar(Object.keys(state.answers).length, state.filtered.length)}
+        </div>
+        <div style="height:12px"></div>
+        <div class="card">
+          <h3>Actions</h3>
+          <div class="row">
+            <button class="btn brand" onclick="setView('Mock Test')">Start Mock Test</button>
+            <button class="btn" onclick="setView('Learn')">Back to Learn</button>
+          </div>
+        </div>
+      </aside>
+    </div>`
+  }
+
+  function pick(id,i){ state.answers[id]=i; render(); }
+  function prev(){ state.current = Math.max(0, state.current-1); render(); }
+  function next(){ state.current = Math.min(state.filtered.length-1, state.current+1); render(); }
+  function goto(i){ state.current=i; render(); }
+
+  // Mock Test view
+  function startMock(){
+    const pool = [...state.filtered]; if(state.settings.shuffle) shuffle(pool);
+    state.mockSet = pool.slice(0, Math.min(state.settings.limit, pool.length));
+    state.current=0; state.answers={}; state.review=[]; state.timers.start=Date.now();
+    render();
+  }
+  function scoreMock(){
+    const qs = state.mockSet || [];
+    let correct=0, wrong=0, blank=0;
+    qs.forEach(q=>{ const a=state.answers[q.id]; if(a===undefined){blank++} else if(a===q.ans){correct++} else {wrong++} });
+    let marks = correct;
+    if(state.settings.negative) marks -= wrong*0.25;
+    return {correct, wrong, blank, total:qs.length, marks:Number(marks.toFixed(2))};
+  }
+
+  function Mock(){
+    if(!state.mockSet){ return `<div class="card"><h3>Mock Test</h3><p class="hint">Creates a timed exam from your current filter.</p><div class="row"><button class="btn brand" onclick="startMock()">Generate Test</button></div></div>` }
+    const q = state.mockSet[state.current];
+    const elapsed = state.timers.start? Math.floor((Date.now()-state.timers.start)/1000):0;
+    const mm = String(Math.floor(elapsed/60)).padStart(2,'0');
+    const ss = String(elapsed%60).padStart(2,'0');
+    const opts = q.opts.map((o,i)=>{
+      const picked = state.answers[q.id]===i;
+      return `<label class="qopt ${picked?'picked':''}"><input type="radio" name="mockopt" ${picked?'checked':''} onclick="pick('${q.id}',${i})"> <div>${String.fromCharCode(65+i)}. ${o}</div></label>`
+    }).join('');
+
+    return `
+    <div class="grid">
+      <div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <div class="row" style="gap:8px;align-items:center"><span class="pill">${q.cat}</span><span class="hint">Q ${state.current+1}/${state.mockSet.length}</span></div>
+            <div class="row" style="gap:8px;align-items:center">
+              <span class="tag">⏱ ${mm}:${ss}</span>
+              <button class="btn small" onclick="prev()">◀</button>
+              <button class="btn small" onclick="next()">▶</button>
+            </div>
+          </div>
+          <h3>${q.q}</h3>
+          ${opts}
+          <div class="row" style="justify-content:flex-end;margin-top:10px">
+            <button class="btn good" onclick="finishMock()">Finish Test</button>
+          </div>
+        </div>
+      </div>
+      <aside>
+        <div class="card">
+          <h3>Progress</h3>
+          ${progressBar(Object.keys(state.answers).length, state.mockSet.length)}
+          <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+            ${state.mockSet.map((qq,i)=>{ const a=state.answers[qq.id]; return `<button class="btn small ${a===undefined?'': 'brand'}" onclick="goto(${i})">${i+1}</button>` }).join('')}
+          </div>
+        </div>
+      </aside>
+    </div>`
+  }
+
+  function finishMock(){ const r=scoreMock(); state.review = (state.mockSet||[]).filter(q=>state.answers[q.id]!==q.ans).map(q=>q.id); setView('Review'); toast('Mock submitted. View your result.'); }
+
+  function Review(){
+    if(!state.mockSet){ return '<div class="card">No test to review yet.</div>'; }
+    const r=scoreMock();
+    const rows = (state.mockSet||[]).map((q,i)=>{
+      const a = state.answers[q.id];
+      const good = a===q.ans;
+      return `<tr>
+        <td>${i+1}</td>
+        <td>${q.cat}</td>
+        <td>${q.q}</td>
+        <td class="score">${a===undefined?'-':String.fromCharCode(65+a)}</td>
+        <td class="score" style="color:${good?'#22c55e':'#ef4444'}">${String.fromCharCode(65+q.ans)}</td>
+        <td>${q.exp||''}</td>
+      </tr>`
+    }).join('');
+
+    return `
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h3>Result Summary</h3>
+          <div class="chips">
+            <span class="chip">Score: <b class="score">${r.marks}</b></span>
+            <span class="chip">Correct: <b class="score">${r.correct}</b></span>
+            <span class="chip">Wrong: <b class="score">${r.wrong}</b></span>
+            <span class="chip">Unanswered: <b class="score">${r.blank}</b></span>
+          </div>
+        </div>
+        <div style="overflow:auto;border:1px solid #1b2a3a;border-radius:12px">
+          <table style="width:100%;border-collapse:collapse">
+            <thead style="background:#0f1720"><tr>
+              <th style="text-align:left;padding:10px;border-bottom:1px solid #1b2a3a">#</th>
+              <th style="text-align:left;padding:10px;border-bottom:1px solid #1b2a3a">Category</th>
+              <th style="text-align:left;padding:10px;border-bottom:1px solid #1b2a3a">Question</th>
+              <th style="text-align:left;padding:10px;border-bottom:1px solid #1b2a3a">Your</th>
+              <th style="text-align:left;padding:10px;border-bottom:1px solid #1b2a3a">Correct</th>
+              <th style="text-align:left;padding:10px;border-bottom:1px solid #1b2a3a">Explanation</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="row" style="margin-top:10px;justify-content:flex-end">
+          <button class="btn" onclick="setView('Practice')">Practice Mistakes</button>
+          <button class="btn brand" onclick="setView('Learn')">Back to Learn</button>
+        </div>
+      </div>`
+  }
+
+  // Builder view: add/import questions from your book (with page refs in explanation)
+  function Builder(){
+    const cats = categories().filter(c=>c!=='All');
+    return `
+      <div class="grid">
+        <div>
+          <div class="card">
+            <h3>Add Question</h3>
+            <div class="row stretch">
+              <label>Question <input id="bq" type="text" placeholder="Type the exact MCQ stem from your book"></label>
+            </div>
+            <div class="row stretch">
+              <label>Option A <input id="bA" type="text"></label>
+              <label>Option B <input id="bB" type="text"></label>
+            </div>
+            <div class="row stretch">
+              <label>Option C <input id="bC" type="text"></label>
+              <label>Option D <input id="bD" type="text"></label>
+            </div>
+            <div class="row stretch">
+              <label>Correct (A‑D)
+                <select id="bAns"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+              </label>
+              <label>Category
+                <select id="bCat">
+                  ${cats.map(c=>`<option>${c}</option>`).join('')}
+                  <option value="Signs">Signs</option>
+                  <option value="Signals">Signals</option>
+                  <option value="Rules">Rules</option>
+                  <option value="Markings">Markings</option>
+                </select>
+              </label>
+            </div>
+            <label>Explanation / Source (e.g., “Book p. 42”)
+              <textarea id="bExp" placeholder="Add page number or short reason for the correct answer"></textarea>
+            </label>
+            <div class="row" style="justify-content:flex-end">
+              <button class="btn good" onclick="addBuilt()">Add</button>
+            </div>
+          </div>
+          <div style="height:12px"></div>
+          <div class="card">
+            <h3>Import / Export</h3>
+            <p class="hint">Paste JSON (array of {q,opts,ans,cat,exp}). Click <b>Import</b>. Your bank is stored offline in this browser.</p>
+            <textarea id="imp" placeholder='[ {"q":"…","opts":["A","B","C","D"],"ans":1,"cat":"Rules","exp":"Book p.12"} ]'></textarea>
+            <div class="row" style="justify-content:flex-end">
+              <button class="btn" onclick="doImport()">Import JSON</button>
+            </div>
+          </div>
+        </div>
+        <aside>
+          <div class="card">
+            <h3>Question Bank (${state.questions.length})</h3>
+            <div style="max-height:520px;overflow:auto;display:grid;gap:10px">
+              ${state.questions.map((q,i)=>`<div class="qopt" style="align-items:center"><div style="flex:1"><div class="hint">${q.cat}</div><div>${i+1}. ${q.q}</div></div><button class="btn small danger" onclick="delQ('${q.id}')">Delete</button></div>`).join('')}
+            </div>
+          </div>
+        </aside>
+      </div>`
+  }
+
+  function addBuilt(){
+    const q = $('#bq').value.trim();
+    const A = $('#bA').value.trim();
+    const B = $('#bB').value.trim();
+    const C = $('#bC').value.trim();
+    const D = $('#bD').value.trim();
+    const ansIdx = {A:0,B:1,C:2,D:3}[$('#bAns').value];
+    const cat = $('#bCat').value.trim() || 'Rules';
+    const exp = $('#bExp').value.trim();
+    if(!q || [A,B,C,D].some(x=>!x)){ toast('Please fill the question and all four options.'); return; }
+    const item = {id:uid(), q, opts:[A,B,C,D], ans:ansIdx, cat, exp};
+    state.questions.push(item); save(); filterByCategory(state.settings.category); toast('Question added.');
+    ['bq','bA','bB','bC','bD','bExp'].forEach(id=>$('#'+id).value='');
+  }
+  function delQ(id){ state.questions = state.questions.filter(q=>q.id!==id); save(); filterByCategory(state.settings.category); toast('Deleted.'); }
+  function doImport(){
+    try{ const data = JSON.parse($('#imp').value); if(!Array.isArray(data)) throw new Error('Not an array');
+      const cleaned = data.map(x=>({id:uid(), q:String(x.q||'').trim(), opts:[...x.opts], ans:Number(x.ans), cat:String(x.cat||'Rules'), exp:String(x.exp||'')})).filter(x=>x.q && Array.isArray(x.opts) && x.opts.length>=2 && Number.isFinite(x.ans));
+      if(!cleaned.length) throw new Error('No valid items');
+      state.questions = cleaned; save(); filterByCategory('All'); toast('Imported successfully.');
+    }catch(e){ toast('Import failed: '+e.message); }
+  }
+
+  // Export/Import buttons (file)
+  $('#exportBtn').onclick = ()=>{
+    const blob = new Blob([JSON.stringify(state.questions, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='drive-test-questions.json'; a.click(); URL.revokeObjectURL(url);
+  };
+  $('#importBtn').onclick = ()=>{ setView('Builder'); toast('Paste JSON into Import box and click Import.'); };
+
+  function render(){
+    renderTabs();
+    let html='';
+    if(state.view==='Learn') html = Learn();
+    if(state.view==='Practice') html = Practice();
+    if(state.view==='Mock Test') html = Mock();
+    if(state.view==='Review') html = Review();
+    if(state.view==='Builder') html = Builder();
+    $('#panel').innerHTML = html;
+  }
+
+  // Initial render
+  filterByCategory('All');
+  setView('Learn');
+  </script>
+</body>
+</html>
